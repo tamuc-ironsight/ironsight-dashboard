@@ -10,6 +10,7 @@ import Navbar from "../Components/Navbar";
 import VMCPUWidgetHome from "../Components/Widgets/VMStats/VMCPUWidgetHome";
 import MiniVMStatsWidget from "../Components/Widgets/VMStats/MiniVMStatsWidget";
 import ActivityLog from "../Components/Widgets/ActivityLog";
+import ErrorBoundary from "../Components/ErrorBoundary";
 
 class Home extends Component {
   render() {
@@ -18,7 +19,7 @@ class Home extends Component {
         <Navbar />
         <div className="home">
           <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 md:mx-3 max-h-[90%]">
-          {/* Upper row */}
+            {/* Upper row */}
             {/* Ongoing Labs */}
             <div className="col-span-1 row-span-1 rounded-box bg-base-100 shadow-xl m-3">
               <div className="card-body p-4 md:p-8">
@@ -29,7 +30,6 @@ class Home extends Component {
                   <h3 className="font-mono text-lg mr-3">
                     [{new Date().toLocaleDateString()}]
                   </h3>
-                  
                 </div>
                 <OngoingLabs />
               </div>
@@ -40,15 +40,15 @@ class Home extends Component {
               <div className="flex flex-col card-body p-4 md:p-8">
                 <h2 className="card-title">VM Performance</h2>
                 <div className="grid grid-flow-col grid-rows-4 md:grid-rows-1">
-
                   <div className="col-span-1 row-span-3">
-                    <VMCPUWidgetHome />
+                    <ErrorBoundary>
+                      <VMCPUWidgetHome />
+                    </ErrorBoundary>
                   </div>
 
                   <div className="col-span-1 row-span-1">
                     <MiniVMStatsWidget />
                   </div>
-
                 </div>
               </div>
             </div>
@@ -63,7 +63,7 @@ class Home extends Component {
               </div>
             </div>
 
-          {/* Lower Row */}
+            {/* Lower Row */}
             {/* Hypervisor Performance */}
             <div className="md:col-span-2 row-span-1 rounded-box bg-base-100 shadow-xl m-3">
               <div className="card-body p-4 md:p-8">
@@ -86,7 +86,7 @@ class Home extends Component {
             {/* Recent Activity */}
             <div className="md:col-span-2 row-span-1 rounded-box bg-base-100 shadow-xl m-3">
               <div className="card-body p-4 md:p-8">
-                  <h2 className="card-title">Recent Activity</h2>
+                <h2 className="card-title">Recent Activity</h2>
                 <ActivityLog />
               </div>
             </div>

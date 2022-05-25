@@ -6,39 +6,38 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  CartesianGrid
+  CartesianGrid,
 } from "recharts";
 
 import LinearProgress from "@mui/material/LinearProgress";
 import { useQuery } from "react-query";
 import { getVMCPUUsage } from "../../../IronsightAPI";
 import { BsZoomIn } from "react-icons/bs";
-
+const chart_colors = ["#8142FF", "#359EE5", "#ff6384", "#ffce56", "#a2ff8f"];
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="custom-tooltip" style={{ backgroundColor: "rgba(0,0,0,0.6)" }}>
+      <div
+        className="custom-tooltip"
+        style={{ backgroundColor: "rgba(0,0,0,0.6)" }}
+      >
         <div style={{ color: "white" }}>
-          {/* Set background to transparent black */}
-          {" "}
+          {/* Set background to transparent black */}{" "}
           {/* CPU Usage: {` ${payload[0].value}` + "%"}{" "} */}
           {/* For loop to make tooltip with top 5 results */}
           CPU Usage:
           {payload.map((item, index) => {
-            if (index < 1) {
               return (
                 <div key={index}>
-                  <div style={{ color: "white" }}>
+                  <div style={{ color: chart_colors[index] }}>
                     {" "}
                     {item.dataKey}: {` ${item.value}` + "%"}{" "}
                   </div>
-                    </div>
+                </div>
               );
-            }
-          })}
-          
+          }).reverse()}
         </div>
-        <div style={{ color: "#8142FF" }}> Time: {label} </div>
+        <div style={{ color: "white" }}> Time: {label} </div>
       </div>
     );
   }
@@ -69,7 +68,6 @@ function VMCPUWidgetHome() {
   var results_list = data.data.result;
   var datasets = [];
   var labels = [];
-
   for (var i = 0; i < results_list.length; i++) {
     var result = results_list[i];
     var hostname = result.metric.name;
@@ -95,30 +93,17 @@ function VMCPUWidgetHome() {
     labels = chart_data_keys;
   }
 
-  // console.log("[Ironsight] Date(keys):", chart_data_keys);
-  // console.log("[Ironsight] CPU Usage:", chart_data_values);
-  // console.log("[Ironsight] DataSet0:", datasets[0]);
-  // console.log("[Ironsight] DataSet1:", datasets[1]);
-
   // Map datasets into chart_data
   // Map the top 5 CPU usage hosts into a chart
   // Sort the data by CPU usage
-  var sorted_datasets = [];
-  var sorted_data = datasets.sort(function (a, b) {
-    return b.data - a.data;
-  }
-  // Take the top 5
-  ).slice(0, 5);
-
-  // If the sorted_data is not 5, fill the rest with empty data
-  if (sorted_data.length < 5) {
-    for (var i = 0; i < 5 - sorted_data.length; i++) {
-      sorted_data.push({
-        labels: "",
-        data: [],
-      });
-    }
-  }
+  var sorted_data = datasets
+    .sort(
+      function (a, b) {
+        return b.data - a.data;
+      }
+      // Take the top 5
+    )
+    .slice(0, 5);
 
   const chart_data = labels.map((x, y) => {
     var temp_chart_data = {};
@@ -127,6 +112,38 @@ function VMCPUWidgetHome() {
       temp_chart_data[sorted_data[i].labels] = sorted_data[i].data[y];
     }
     return temp_chart_data;
+  });
+
+  // Generate the linear gradients for the chart
+  let gradients = [];
+  for (let i = 0; i < sorted_data.length; i++) {
+    gradients.push(
+      <linearGradient
+        key={`colorValue${i + 1}`}
+        id={`colorValue${i + 1}`}
+        x1="0"
+        y1="0"
+        x2="0"
+        y2="1"
+      >
+        <stop offset="5%" stopColor={chart_colors[i]} stopOpacity={0.5} />
+        <stop offset="95%" stopColor={chart_colors[i]} stopOpacity={0} />
+      </linearGradient>
+    );
+  }
+
+  // Generate the Areas for the chart
+  const areas = sorted_data.map((x, y) => {
+    return (
+      <Area
+        key={y}
+        type="monotone"
+        dataKey={x.labels}
+        stroke={chart_colors[y]}
+        fillOpacity={1}
+        fill={`url(#colorValue${y + 1})`}
+      />
+    );
   });
 
   // Find the max value in the datasets
@@ -143,8 +160,6 @@ function VMCPUWidgetHome() {
   // Convert to integer
   max_value = Math.ceil(max_value);
 
-  // console.log("[Ironsight] Chart Data:", chart_data);
-
   return (
     <div>
       <ResponsiveContainer width="100%" height={280}>
@@ -158,36 +173,10 @@ function VMCPUWidgetHome() {
             left: -20,
             bottom: -30,
           }}
-          
         >
           {/* CartesianGrid with grey stroke */}
           <CartesianGrid stroke="rgba(0,0,0,0.2)" />
-          <defs>
-            <linearGradient id="colorValue1" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#8142FF" stopOpacity={0.5} />
-              <stop offset="95%" stopColor="#8142FF" stopOpacity={0} />
-            </linearGradient>
-
-            <linearGradient id="colorValue2" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#359EE5" stopOpacity={0.4} />
-              <stop offset="95%" stopColor="#359EE5" stopOpacity={0} />
-            </linearGradient>
-
-            <linearGradient id="colorValue3" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#ff6384" stopOpacity={0.5} />
-              <stop offset="95%" stopColor="#ff6384" stopOpacity={0} />
-            </linearGradient>
-
-            <linearGradient id="colorValue4" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#ffce56" stopOpacity={0.4} />
-              <stop offset="95%" stopColor="#ffce56" stopOpacity={0} />
-            </linearGradient>
-
-            <linearGradient id="colorValue5" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#a2ff8f" stopOpacity={0.5} />
-              <stop offset="95%" stopColor="#a2ff8f" stopOpacity={0} />
-            </linearGradient>
-          </defs>
+          <defs>{gradients}</defs>
 
           <XAxis
             dataKey={"label"}
@@ -207,47 +196,7 @@ function VMCPUWidgetHome() {
             scale="linear"
           />
           <Tooltip content={<CustomTooltip data={chart_data} />} />
-
-          <Area
-            type="monotone"
-            dataKey={sorted_data[0].labels}
-            stroke="#8142FF"
-            fillOpacity={1}
-            fill="url(#colorValue1)"
-          />
-          <Area
-            type="monotone"
-            dataKey={sorted_data[1].labels}
-            stroke="#359EE5"
-            fillOpacity={1}
-            fill="url(#colorValue2)"
-          />
-
-          <Area
-            type="monotone"
-            dataKey={sorted_data[2].labels}
-            stroke="#ff6384"
-            fillOpacity={1}
-            fill="url(#colorValue3)"
-          />
-
-          <Area
-            type="monotone"
-            dataKey={sorted_data[3].labels}
-            stroke="#ffce56"
-            fillOpacity={1}
-            fill="url(#colorValue4)"
-          />
-
-          <Area
-            type="monotone"
-            dataKey={sorted_data[4].labels}
-            stroke="#a2ff8f"
-            fillOpacity={1}
-            fill="url(#colorValue5)"
-          />
-          
-
+          {areas}
         </AreaChart>
       </ResponsiveContainer>
       <div className="flex justify-end">
