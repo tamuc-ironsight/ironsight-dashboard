@@ -105,7 +105,7 @@ export default function CreateVMDialog() {
   // Make a GET request to the server to get the list of templates
   // and map them to a dropdown menu
   const get_templates = () => {
-    fetch("https://api.rellis.dev/get.php?q=get_templates")
+    fetch(`${process.env.REACT_APP_API_SERVER}/get.php?q=get_templates`)
       .then((response) => response.json())
       .then((data) => {
         // console.log(data);
@@ -123,7 +123,7 @@ export default function CreateVMDialog() {
   // Make a GET request to the server to get the list of users
   // and map them to a dropdown menu
   const get_users = () => {
-    fetch("https://api.rellis.dev/get.php?q=get_users")
+    fetch(`${process.env.REACT_APP_API_SERVER}/get.php?q=get_users`)
       .then((response) => response.json())
       .then((data) => {
         // console.log(data);
@@ -141,7 +141,7 @@ export default function CreateVMDialog() {
   // Make a GET request to the server to get the list of templates
   // and map them to a dropdown menu
   const get_labs = () => {
-    fetch("https://api.rellis.dev/get.php?q=get_labs")
+    fetch(`${process.env.REACT_APP_API_SERVER}/get.php?q=get_labs`)
       .then((response) => response.json())
       .then((data) => {
         // console.log(data);
@@ -159,7 +159,7 @@ export default function CreateVMDialog() {
   // Make a GET request to the server to get the list of templates
   // and map them to a dropdown menu
   const get_courses = () => {
-    fetch("https://api.rellis.dev/get.php?q=get_courses")
+    fetch(`${process.env.REACT_APP_API_SERVER}/get.php?q=get_courses`)
       .then((response) => response.json())
       .then((data) => {
         var course_list = data.map(function (class_obj) {
