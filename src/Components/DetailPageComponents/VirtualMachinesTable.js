@@ -98,7 +98,7 @@ const VirtualMachinesTable = ({ course_id, user_name }) => {
     if (confirm_power_on) {
       console.log("[Ironsight] Toggling power on : " + hostname);
       var status = fetch(
-        `${process.env.REACT_APP_API_SERVER}/get.php?q=power_toggle_vm&vm_name=` + hostname
+        `${process.env.REACT_APP_IRONSIGHT_API_URL}/get.php?q=power_toggle_vm&vm_name=` + hostname
       );
       status.then((response) => {
         return response.json();

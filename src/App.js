@@ -55,12 +55,12 @@ function App() {
       
       <meta
         property="og:image"
-        content={`${process.env.REACT_APP_API_SERVER}/assets/Ironsight1080.jpg`}
+        content={`${process.env.REACT_APP_IRONSIGHT_API_URL}/assets/Ironsight1080.jpg`}
       />
 
       <meta
         property="og:url"
-        content={`${process.env.REACT_APP_API_SERVER}/`}
+        content={`${process.env.REACT_APP_IRONSIGHT_API_URL}/`}
       />
 
       <ThemeProvider theme={darkTheme}>

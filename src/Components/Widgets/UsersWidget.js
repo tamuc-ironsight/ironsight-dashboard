@@ -4,7 +4,7 @@ const UsersWidget = () => {
   const [user_list, setUserList] = React.useState("");
 
   const get_users = () => {
-    fetch(`${process.env.REACT_APP_API_SERVER}/get.php?q=get_users")
+    fetch(`${process.env.REACT_APP_IRONSIGHT_API_URL}/get.php?q=get_users")
       .then((response) => response.json())
       .then((data) => {
         // console.log(data);

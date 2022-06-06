@@ -87,7 +87,9 @@ class Home extends Component {
             <div className="md:col-span-2 row-span-1 rounded-box bg-base-100 shadow-xl m-3">
               <div className="card-body p-4 md:p-8">
                 <h2 className="card-title">Recent Activity</h2>
-                <ActivityLog />
+                <ErrorBoundary>
+                  <ActivityLog />
+                </ErrorBoundary>
               </div>
             </div>
           </div>
