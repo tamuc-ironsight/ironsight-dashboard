@@ -55,12 +55,12 @@ function App() {
       
       <meta
         property="og:image"
-        content="https://ironsight.rellis.dev/assets/Ironsight1080.jpg"
+        content={`${process.env.REACT_APP_API_SERVER}/assets/Ironsight1080.jpg`}
       />
 
       <meta
         property="og:url"
-        content="https://ironsight.rellis.dev/"
+        content={`${process.env.REACT_APP_API_SERVER}/`}
       />
 
       <ThemeProvider theme={darkTheme}>
