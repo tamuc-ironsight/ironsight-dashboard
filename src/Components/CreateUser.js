@@ -174,7 +174,7 @@ const CreateUser = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 grid-flow-row col-span-2">
             <div className="col-span-1 row-span-1 mr-2">
               <input
-                type="text"
+                type="password"
                 placeholder="Password"
                 className="input input-bordered w-full mb-4"
                 id="password"
@@ -184,7 +184,7 @@ const CreateUser = () => {
             </div>
             <div className="col-span-1 row-span-1 mr-2">
               <input
-                type="text"
+                type="password"
                 placeholder="Confirm Password"
                 className="input input-bordered w-full"
                 id="confirm_password"
