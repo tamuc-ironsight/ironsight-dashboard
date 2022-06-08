@@ -4,8 +4,79 @@ import { useQuery } from "react-query";
 import { getUsersList } from "../../IronsightAPI";
 import { Link } from "react-router-dom";
 import LinearProgress from "@mui/material/LinearProgress";
+import { FaRegTrashAlt, FaUserEdit } from "react-icons/fa";
+import { handleEvent } from "../../IronsightAPI";
 
-const StudentsTable = ({ course_id }) => {
+function DeleteUser(user_name) {
+  var event_data = {
+    action: "delete",
+    type: "user",
+    data: {
+      user_name: user_name,
+    },
+  };
+  // Delete user from database
+  handleEvent(event_data).then((response) => {
+    // If the response is successful, set the submit status to success
+    if (response.status === "success") {
+      // Alert the user that the user was created
+      alert('User "' + user_name + '" was deleted successfully.');
+    }
+    // If the response is not successful, set the submit status to error
+    else {
+      alert("There was an error deleting the user.");
+    }
+    console.log(response);
+  });
+  return null;
+}
+
+const DeleteUserButton = ({ user_name }) => {
+  // Delete button with trash icon
+  return (
+    <button
+      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+      onClick={() => {
+        if (
+          window.confirm(
+            'Are you sure you wish to delete user "' + user_name + '"?'
+          )
+        ) {
+          DeleteUser(user_name);
+        }
+      }}
+    >
+      <FaRegTrashAlt />
+    </button>
+  );
+};
+
+const EditUserButton = ({ user_name }) => {
+  // Edit button with pencil icon
+  return (
+    <div>
+        <button 
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          // Placeholder for edit user dialog
+          onClick={() => {alert('Edit user "' + user_name + '"')}}
+        >
+          <FaUserEdit />
+        </button>
+    </div>
+  );
+};
+
+const ComboButton = ({ user_name }) => {
+  // Combination of delete and edit buttons
+  return (
+    <div className="flex gap-4">
+      <EditUserButton user_name={user_name} />
+      <DeleteUserButton user_name={user_name} />
+    </div>
+  );
+};
+
+const ManageUsers = ({ course_id }) => {
   const { data, isLoading, isError } = useQuery("users_list", getUsersList);
 
   if (isLoading) {
@@ -20,13 +91,13 @@ const StudentsTable = ({ course_id }) => {
   var student_data = [];
   // Filter out students that are not in the course
   if (course_id !== undefined) {
-  for (var i = 0; i < data.length; i++) {
-    for (var j = 0; j < data[i].courses.length; j++) {
-      if (data[i].courses[j].course_id === course_id) {
-        student_data.push(data[i]);
+    for (var i = 0; i < data.length; i++) {
+      for (var j = 0; j < data[i].courses.length; j++) {
+        if (data[i].courses[j].course_id === course_id) {
+          student_data.push(data[i]);
+        }
       }
     }
-  }
   } else {
     student_data = data;
   }
@@ -91,6 +162,9 @@ const StudentsTable = ({ course_id }) => {
         <td>{student_email}</td>
         <td>********</td>
         <td>{user_role}</td>
+        <td>
+          <ComboButton user_name={student.user_name} />
+        </td>
       </tr>
     );
   });
@@ -108,6 +182,7 @@ const StudentsTable = ({ course_id }) => {
             <th>Email</th>
             <th>Student ID</th>
             <th>Role</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>{table_html}</tbody>
@@ -116,4 +191,4 @@ const StudentsTable = ({ course_id }) => {
   );
 };
 
-export default StudentsTable;
+export default ManageUsers;

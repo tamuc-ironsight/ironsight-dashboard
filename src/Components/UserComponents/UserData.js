@@ -88,7 +88,7 @@ const useUserData = () => {
     var last_name =
       student.last_name.charAt(0).toUpperCase() + student.last_name.slice(1);
 
-    var student_email = student.user_name + "@leomail.tamuc.edu";
+    var student_email = student.user_name + "@example.edu";
 
     // Check the tags to see if the student is a student or a professor
     var user_role = student.roles[0];

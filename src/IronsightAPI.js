@@ -318,7 +318,7 @@ export const handleEvent = async (event_data) => {
     }
   );
   if (!response.ok) {
-    throw new Error("Failed to create user");
+    throw new Error("Failed to handle event");
   }
   return response.json();
 };

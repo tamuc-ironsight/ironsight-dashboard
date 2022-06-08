@@ -1,7 +1,7 @@
 import React from "react";
 import "../App.css";
 import Navbar from "../Components/Navbar";
-import CreateUser from "../Components/CreateUser";
+import UserSettings from "./DetailPages/UserSettings";
 import CreateLab from "../Components/CreateLab";
 import CreateCourse from "../Components/CreateCourse";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -92,7 +92,7 @@ function Settings() {
               {selectedTab === "labs" && <CreateLab />}
 
               {/* Users */}
-              {selectedTab === "users" && <CreateUser />}
+              {selectedTab === "users" && <UserSettings />}
 
               {/* Courses */}
               {selectedTab === "courses" && <CreateCourse />}
