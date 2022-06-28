@@ -17,6 +17,7 @@ const CourseCard = ({ course_id, course_name, course_thumbnail, user_name }) => 
           <img
             className="object-cover h-48 min-w-full"
             src={course_thumbnail}
+            alt={course_name}
           />
         </figure>
         <div className="card-body">

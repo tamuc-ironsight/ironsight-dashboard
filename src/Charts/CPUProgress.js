@@ -6,10 +6,9 @@ import { useQuery } from "react-query";
 import { getMetrics } from "../IronsightAPI";
 
 const CPUProgress = () => {
-  const [intervalMs, setIntervalMs] = React.useState(10000);
   const { data, isLoading, isError } = useQuery("get_metrics", getMetrics, {
     // Refetch the data every 10 seconds
-    refetchInterval: intervalMs,
+    refetchInterval: 10000,
   });
 
   if (isLoading) {
@@ -21,15 +20,8 @@ const CPUProgress = () => {
   }
 
   var metrics_data = data.data;
-  var hostname = [];
   var cpu_usage = [];
-  var memory_usage = [];
   for (var i = 0; i < metrics_data.length; i++) {
-    // hostname.push(metrics_data[i].id);
-
-    // var memory = metrics_data[i].metadata.fields[2].split("Ki");
-    // var temp = memory[0]/(1024*1024);
-    // memory_usage.push(temp.toFixed(2));
 
     var cpu = metrics_data[i].metadata.fields[1].split("n");
     var temp = cpu[0] / 1024;
@@ -43,10 +35,6 @@ const CPUProgress = () => {
 
   var average_cpu = sum / cpu_usage.length;
   var Percentage = (average_cpu / sum) * 100;
-
-  const change_progressbar_input = () => {
-    setIntervalMs(7);
-  };
 
   return (
     <div id="progressbarContainer">

@@ -170,7 +170,6 @@ const ManageUsers = ({ course_id }) => {
   });
 
   //   Take the raw JSON and turn it into the rows of the table
-  var student_name = "";
 
   return (
     <div className="overflow-x-auto w-full">

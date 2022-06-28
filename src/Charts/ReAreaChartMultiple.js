@@ -19,7 +19,7 @@ const CustomTooltip = ({ active, payload, label }) => {
       <div className="custom-tooltip">
         <div style={{ color: "white" }}>
           {" "}
-          CPU Usage: {` ${payload[0].value}` + "%"}{" "}
+          CPU Usage: {` ${payload[0].value}`}%{" "}
         </div>
         <div style={{ color: "#8142FF" }}> Time: {label} </div>
       </div>
@@ -30,11 +30,10 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function ReAreaChartMultiple() {
-  const [intervalMs, setIntervalMs] = React.useState(15000);
   const [isZoomed, setIsZoomed] = React.useState(true);
   const { data, isLoading, isError } = useQuery("cpu_usage", getCPUUsage, {
     // Refetch the data every 15 seconds
-    refetchInterval: intervalMs,
+    refetchInterval: 15000,
   });
 
   if (isLoading) {
@@ -94,7 +93,7 @@ export default function ReAreaChartMultiple() {
 
   // Find the max value in the datasets
   var max_value = 0;
-  for (var i = 0; i < datasets.length; i++) {
+  for (var f = 0; f < datasets.length; f++) {
     var dataset = datasets[i];
     for (var j = 0; j < dataset.data.length; j++) {
       var value = dataset.data[j];

@@ -85,6 +85,12 @@ const CreateLab = () => {
     return <p>Error!</p>;
   }
 
+  // TODO: Check if role is admin
+  const role_data_dummy = role_data;
+  if (role_data_dummy !== undefined) {
+    // Do nothing
+  }
+
   const vm_template = vm_lab_create.map((template) => template.template_name);
 
   return (

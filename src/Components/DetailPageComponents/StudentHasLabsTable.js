@@ -17,7 +17,7 @@ const StudentsLabsTable = ({ course_id }) => {
   } = useQuery(["lab_overview_student", lab_num], getLabOverview);
 
   const {
-    data: data,
+    data: userData,
     isLoading: isLoading_user,
     isError: isError_user,
   } = useQuery("users_list", getUsersList);
@@ -32,7 +32,7 @@ const StudentsLabsTable = ({ course_id }) => {
 
   var raw_lab_data = [];
   var raw_student_data = [];
-  raw_student_data = data;
+  raw_student_data = userData;
   raw_lab_data = lab_overview_data;
   var filtered_students = [];
 
@@ -113,7 +113,6 @@ const StudentsLabsTable = ({ course_id }) => {
   });
 
   //   Take the raw JSON and turn it into the rows of the table
-  var student_name = "";
 
   return (
     <div className="overflow-x-auto w-full">

@@ -66,9 +66,7 @@ export default function CreateVMDialog() {
   };
 
   const set_vm_name = (event) => {
-    {
-      /* Name field can only be alphanumeric and dashes, fail otherwise */
-    }
+    /* Name field can only be alphanumeric and dashes, fail otherwise */
     var vm_name_input = event.target.value;
     // Replace all non-alphanumeric characters with dashes (allow dashes in the middle)
     vm_name_input = vm_name_input.replace(/[^a-zA-Z0-9-]/g, "-");
