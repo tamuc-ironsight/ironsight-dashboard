@@ -23,8 +23,8 @@ npm install
 The only thing needed for configuration of the Ironsight web dashboard is the `.env` file in the main directory of the project. It contains the following:
 
 ```bash
-REACT_APP_IRONSIGHT_API_URL=
-REACT_APP_HARVESTER_URL=
+VITE_IRONSIGHT_API_URL=
+VITE_HARVESTER_URL=
 ```
 
 In order for any data to flow to the dashboard, this must be set to the domain or IP address hosting the [Ironsight API Handler](https://github.com/tamuc-ironsight/ironsight-api-handler). We recommended using a secure connection (https) for any production environments.

@@ -26,7 +26,6 @@
     "react-query": "^3.34.19",
     "react-rnd": "^10.3.5",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "5.0.0",
     "react-table": "^7.7.0",
     "react-window": "^1.8.6",
     "recharts": "^2.1.9",
@@ -35,10 +34,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
-    "eject": "react-scripts eject",
+    "start": "vite --host",
+    "build": "vite build",
+    "dev": "vite dev",
     "pretty": "prettier --write \"./**/*.{js,jsx,json}\""
   },
   "eslintConfig": {
@@ -64,9 +62,11 @@
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.5.1",
     "@mui/material": "^5.5.3",
-    "autoprefixer": "^10.4.4",
-    "postcss": "^8.4.12",
+    "@vitejs/plugin-react": "1.1.1",
+    "autoprefixer": "^10.4.7",
+    "postcss": "^8.4.14",
     "prettier": "^2.6.2",
-    "tailwindcss": "^3.0.23"
+    "tailwindcss": "^3.1.4",
+    "vite": "2.7.0"
   }
 }

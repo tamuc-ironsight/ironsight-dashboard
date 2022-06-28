@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./Pages/Home";
 import Network from "./Pages/Network";
 import Courses from "./Pages/Courses";
@@ -39,9 +39,9 @@ function App() {
   // Check if localStorage.ironsight_token is set, if not, redirect to login
   if (
     localStorage.getItem("ironsight_token") === null &&
-    window.location.pathname !== "/login"
+    window.location.pathname !== "#/login"
   ) {
-    window.location.href = "/login";
+    window.location.href = "#/login";
   }
 
   return (
@@ -55,12 +55,12 @@ function App() {
       
       <meta
         property="og:image"
-        content={`${process.env.REACT_APP_IRONSIGHT_API_URL}/assets/Ironsight1080.jpg`}
+        content={`${import.meta.env.VITE_IRONSIGHT_API_URL}/assets/Ironsight1080.jpg`}
       />
 
       <meta
         property="og:url"
-        content={`${process.env.REACT_APP_IRONSIGHT_API_URL}/`}
+        content={`${import.meta.env.VITE_IRONSIGHT_API_URL}/`}
       />
 
       <ThemeProvider theme={darkTheme}>

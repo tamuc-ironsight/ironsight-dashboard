@@ -89,12 +89,12 @@ export default function Navbar() {
                 <div className="flex-shrink-0 flex items-center">
                   <img
                     className="block lg:hidden h-8 w-auto"
-                    src={process.env.PUBLIC_URL + "/logo_horizontal.png"}
+                    src={"/logo_horizontal.png"}
                     alt="Ironsight Banner"
                   />
                   <img
                     className="hidden lg:block h-8 w-auto"
-                    src={process.env.PUBLIC_URL + "/logo_horizontal.png"}
+                    src={"/logo_horizontal.png"}
                     alt="Ironsight Logo"
                   />
                 </div>

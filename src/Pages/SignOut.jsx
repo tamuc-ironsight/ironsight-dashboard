@@ -1,12 +1,11 @@
 import React from "react";
 import "../App.css";
-import Navbar from "../Components/Navbar";
 
 function SignOut() {
   // Redirect to login page
   localStorage.removeItem("ironsight_token");
   localStorage.removeItem("ironsight_username");
-  window.location.href = "/login";
+  window.location.href = "#/login";
 
   return (
     <div className="signout">

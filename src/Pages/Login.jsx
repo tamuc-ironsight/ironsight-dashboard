@@ -104,7 +104,7 @@ const Login = () => {
           <div className="card w-full md:w-[48rem] bg-base-100 shadow-xl">
             <img
               className="block h-8 mx-auto mt-4"
-              src={process.env.PUBLIC_URL + "/logo_horizontal.png"}
+              src={"/logo_horizontal.png"}
               alt="Ironsight Banner"
             />
             <div className="form-control card-body p-4 md:p-8">

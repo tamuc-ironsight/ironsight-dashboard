@@ -3,11 +3,8 @@ import "../../App.css";
 import Navbar from "../../Components/Navbar";
 import { useParams } from "react-router-dom";
 import { useQuery } from "react-query";
-import LabTable from "../../Components/DetailPageComponents/LabsTable";
-import VirtualMachineTable from "../../Components/DetailPageComponents/VirtualMachinesTable";
 import CourseCard from "../../Components/DetailPageComponents/CourseCard";
 import StudentsLabsTable, {
-  StudentHasLabsTable,
 } from "../../Components/DetailPageComponents/StudentHasLabsTable";
 import {
   getLabOverview,

@@ -80,5 +80,5 @@ export const NavbarData = [
 export const userNavigation = [
   { name: 'Your Profile', path: '#' },
   { name: 'Settings', path: '#' },
-  { name: 'Sign out', path: '/signout' },
+  { name: 'Sign out', path: '#/signout' },
 ]
