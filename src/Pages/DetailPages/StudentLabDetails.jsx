@@ -10,7 +10,7 @@ import {
   getVMList,
   getLabList,
   getUsersList,
-  getHarvesterVMList,
+  getHypervisorVMList,
   getBashHistory,
   getFileMonitoring,
 } from "../../IronsightAPI";
@@ -40,10 +40,10 @@ function StudentLabDetails() {
     isError: isError_user,
   } = useQuery("users_list", getUsersList);
   const {
-    data: harvester_data,
-    isLoading: harvester_isLoading,
-    isError: harvester_isError,
-  } = useQuery("harvester_vms", getHarvesterVMList);
+    data: hypervisor_data,
+    isLoading: hypervisor_isLoading,
+    isError: hypervisor_isError,
+  } = useQuery("hypervisor_vms", getHypervisorVMList);
   var [selectedVM, setSelectedVM] = React.useState("");
   const {
     data: bash_history_data,
@@ -62,7 +62,7 @@ function StudentLabDetails() {
     isLoading_lab ||
     isLoading_vm ||
     isLoading_user ||
-    harvester_isLoading
+    hypervisor_isLoading
   ) {
     return <LinearProgress />;
   }
@@ -71,7 +71,7 @@ function StudentLabDetails() {
     isError_lab ||
     isError_vm ||
     isError_user ||
-    harvester_isError
+    hypervisor_isError
   ) {
     return <p>Error!</p>;
   }

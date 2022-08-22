@@ -2,7 +2,7 @@ import React from "react";
 import { useQuery } from "react-query";
 
 import {
-  getHarvesterVMList,
+  getHypervisorVMList,
   getLabList,
   getUsersList,
   getTags,
@@ -16,15 +16,15 @@ const useUserData = () => {
   // State for holding final data
 
   const { data, isLoading, isError } = useQuery(
-    "harvester_vms",
-    getHarvesterVMList
+    "hypervisor_vms",
+    getHypervisorVMList
   );
 
   const {
-    data: harvester_data,
-    isLoading: harvester_isLoading,
-    isError: harvester_isError,
-  } = useQuery("harvester_vms", getHarvesterVMList);
+    data: hypervisor_data,
+    isLoading: hypervisor_isLoading,
+    isError: hypervisor_isError,
+  } = useQuery("hypervisor_vms", getHypervisorVMList);
 
   const {
     data: lab_data,
@@ -46,7 +46,7 @@ const useUserData = () => {
 
   if (
     isLoading ||
-    harvester_isLoading ||
+    hypervisor_isLoading ||
     lab_isLoading ||
     users_isLoading ||
     isLoading_tags
@@ -56,7 +56,7 @@ const useUserData = () => {
 
   if (
     isError ||
-    harvester_isError ||
+    hypervisor_isError ||
     lab_isError ||
     users_isError ||
     isError_tags

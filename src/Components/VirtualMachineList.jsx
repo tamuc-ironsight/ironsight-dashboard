@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery } from "react-query";
-import { getVMList, getHarvesterVMList, getLabList } from "../IronsightAPI";
+import { getVMList, getHypervisorVMList, getLabList } from "../IronsightAPI";
 import LinearProgress from "@mui/material/LinearProgress";
 import CreateVMButton from "./CreateVMButton";
 import { BsPower } from "react-icons/bs";
@@ -10,10 +10,10 @@ export const VirtualMachineList = () => {
   const [intervalMs, setIntervalMs] = React.useState(5000);
   const { data, isLoading, isError } = useQuery("virtual_machines", getVMList);
   const {
-    data: harvester_data,
-    isLoading: harvester_isLoading,
-    isError: harvester_isError,
-  } = useQuery("harvester_vms", getHarvesterVMList, {
+    data: hypervisor_data,
+    isLoading: hypervisor_isLoading,
+    isError: hypervisor_isError,
+  } = useQuery("hypervisor_vms", getHypervisorVMList, {
     refetchInterval: intervalMs,
   });
 
@@ -25,24 +25,13 @@ export const VirtualMachineList = () => {
     refetchInterval: intervalMs,
   });
 
-  if (isLoading || harvester_isLoading || lab_isLoading) {
+  if (isLoading || hypervisor_isLoading || lab_isLoading) {
     return <LinearProgress />;
   }
 
-  if (isError || harvester_isError || lab_isError) {
+  if (isError || hypervisor_isError || lab_isError) {
     return <p>Error!</p>;
   }
-
-  const get_vm_list = () => {
-    return data.map(({ vm_name, template_name, port_number }) => (
-      <tr key={vm_name} className="hover">
-        <td>{vm_name}</td>
-        <td>{template_name}</td>
-        <td>{port_number}</td>
-      </tr>
-    ));
-  };
-  const vm_list = get_vm_list();
 
   const get_labs_list = () => {
     // Find lab by lab num and store in lab_mapping
@@ -67,7 +56,10 @@ export const VirtualMachineList = () => {
     if (confirm_power_on) {
       console.log("[Ironsight] Toggling power on : " + hostname);
       var status = fetch(
-        `${import.meta.env.VITE_IRONSIGHT_API_URL}/get.php?q=power_toggle_vm&vm_name=` + hostname
+        `${import.meta.env.VITE_HYPERVISOR_URL}/vms/` + hostname + `/toggle_power`,
+        {
+          method: "POST"
+        }
       );
       status.then((response) => {
         return response.json();
@@ -77,39 +69,54 @@ export const VirtualMachineList = () => {
     }
   };
 
-  // Loop through Harvester VM list and if there is a VM in the get_vm_list, add the port number to the list
-  for (var i = 0; i < harvester_data.length; i++) {
-    var harvester_vm = harvester_data[i];
-    var harvester_vm_name = harvester_vm.metadata.name;
+  // Loop through hypervisor VM list and if there is a VM in the get_vm_list, add the port number to the list
+  for (var i = 0; i < hypervisor_data['data'].length; i++) {
+    var hypervisor_vm = hypervisor_data['data'][i];
+    var hypervisor_vm_name = hypervisor_vm.name;
     for (var j = 0; j < data.length; j++) {
-      if (harvester_vm_name === data[j].vm_name) {
-        harvester_data[i].port_number = data[j].port_number;
-        harvester_data[i].users = data[j].users;
-        harvester_data[i].labs = data[j].labs;
+      if (hypervisor_vm_name === data[j].vm_name) {
+        hypervisor_data['data'][i].port_number = data[j].port_number;
+        hypervisor_data['data'][i].users = data[j].users;
+        hypervisor_data['data'][i].labs = data[j].labs;
       }
     }
   }
 
-  // Convert the labs in the harvester_data to the lab_mapping alias
-  for (var i = 0; i < harvester_data.length; i++) {
-    var harvester_vm = harvester_data[i];
-    if (harvester_vm.labs) {
-      var harvester_vm_labs = harvester_vm.labs;
-      var harvester_vm_labs_list = [];
-      for (var j = 0; j < harvester_vm_labs.length; j++) {
-        harvester_vm_labs_list[j] = lab_mapping[harvester_vm_labs[j]];
+  // Convert the labs in the hypervisor_data to the lab_mapping alias
+  for (var i = 0; i < hypervisor_data['data'].length; i++) {
+    var hypervisor_vm = hypervisor_data['data'][i];
+    if (hypervisor_data['data'].labs) {
+      var hypervisor_vm_labs = hypervisor_data['data'].labs;
+      var hypervisor_vm_labs_list = [];
+      for (var j = 0; j < hypervisor_vm_labs.length; j++) {
+        hypervisor_vm_labs_list[j] = lab_mapping[hypervisor_vm_labs[j]];
       }
-      harvester_data[i].labs = harvester_vm_labs_list;
+      hypervisor_data['data'][i].labs = hypervisor_vm_labs_list;
     }
   }
 
-  const get_harvester_vm_list = () => {
-    return harvester_data.map(
-      ({ metadata, status, port_number, users, labs }) => (
-        <tr key={metadata.name} className="hover">
+  // Sort hypervisor_data by name
+  hypervisor_data['data'] = hypervisor_data['data'].sort(function (a, b) {
+    var nameA = a.name.toUpperCase(); // ignore upper and lowercase
+    var nameB = b.name.toUpperCase(); // ignore upper and lowercase
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    // names must be equal
+    return 0;
+  }
+  );
+
+  const get_hypervisor_vm_list = () => {
+    return hypervisor_data['data'].map(
+      ({ name, status, port_number, users, labs }) => (
+        <tr key={name} className="hover">
           <td>
-            <Link key={metadata.name} to={"/vm_details/" + metadata.name}>
-              {metadata.name}
+            <Link key={name} to={"/vm_details/" + name}>
+              {name}
             </Link>
           </td>
           <td>
@@ -142,21 +149,21 @@ export const VirtualMachineList = () => {
           <td>
             {/* Three states are Running, Starting, and Stopped */}
 
-            {status.printableStatus === "Running" ? (
+            {status === "running" ? (
               <div className="badge badge-success gap-2">
-                {status.printableStatus}
+                {status}
               </div>
-            ) : status.printableStatus === "Starting" ? (
+            ) : status === "starting" ? (
               <div className="badge badge-info gap-2">
-                {status.printableStatus}
+                {status}
               </div>
-            ) : status.printableStatus === "Stopped" ? (
+            ) : status === "stopped" ? (
               <div className="badge badge-error gap-2">
-                {status.printableStatus}
+                {status}
               </div>
             ) : (
               <div className="badge badge-warning gap-2">
-                {status.printableStatus}
+                {status}
               </div>
             )}
           </td>
@@ -164,7 +171,7 @@ export const VirtualMachineList = () => {
           <td>
             <button
               onClick={() => {
-                toggleVMPower(metadata.name);
+                toggleVMPower(name);
               }}
               className="btn btn-outline btn-sm btn-circle"
               type="button"
@@ -176,7 +183,8 @@ export const VirtualMachineList = () => {
       )
     );
   };
-  const harvester_vm_list = get_harvester_vm_list();
+  // Get the hypervisor_vm_list and sort by name
+  const hypervisor_vm_list = get_hypervisor_vm_list();
 
   return (
     <div className="w-full overflow-auto">
@@ -195,7 +203,7 @@ export const VirtualMachineList = () => {
               <th>Power</th>
             </tr>
           </thead>
-          <tbody>{harvester_vm_list}</tbody>
+          <tbody>{hypervisor_vm_list}</tbody>
         </table>
       </div>
     </div>

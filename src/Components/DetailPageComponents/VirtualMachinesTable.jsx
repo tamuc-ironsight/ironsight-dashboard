@@ -3,7 +3,7 @@ import "../../App.css";
 import { useQuery } from "react-query";
 import {
   getVMList,
-  getHarvesterVMList,
+  getHypervisorVMList,
   getLabList,
   getCourseList,
 } from "../../IronsightAPI";
@@ -16,10 +16,10 @@ const VirtualMachinesTable = ({ course_id, user_name }) => {
   const { data: data_vms, isLoading: isLoading_vms, isError: isLoading_error } = useQuery("virtual_machines", getVMList);
 
   const {
-    data: harvester_data,
-    isLoading: harvester_isLoading,
-    isError: harvester_isError,
-  } = useQuery("harvester_vms", getHarvesterVMList, {
+    data: hypervisor_data,
+    isLoading: hypervisor_isLoading,
+    isError: hypervisor_isError,
+  } = useQuery("hypervisor_vms", getHypervisorVMList, {
     refetchInterval: intervalMs,
   });
 
@@ -35,11 +35,11 @@ const VirtualMachinesTable = ({ course_id, user_name }) => {
     isError: lab_isError,
   } = useQuery("labs", getLabList);
 
-  if (isLoading_vms || harvester_isLoading || lab_isLoading || course_isLoading) {
+  if (isLoading_vms || hypervisor_isLoading || lab_isLoading || course_isLoading) {
     return <LinearProgress />;
   }
 
-  if (isLoading_error || harvester_isError || lab_isError || course_isError) {
+  if (isLoading_error || hypervisor_isError || lab_isError || course_isError) {
     return <p>Error!</p>;
   }
 
@@ -98,7 +98,7 @@ const VirtualMachinesTable = ({ course_id, user_name }) => {
     if (confirm_power_on) {
       console.log("[Ironsight] Toggling power on : " + hostname);
       var status = fetch(
-        `${import.meta.env.VITE_IRONSIGHT_API_URL}/get.php?q=power_toggle_vm&vm_name=` + hostname
+        `${import.meta.env.VITE_IRONSIGHT_API_URL}//get.php?q=power_toggle_vm&vm_name=` + hostname
       );
       status.then((response) => {
         return response.json();
@@ -108,47 +108,47 @@ const VirtualMachinesTable = ({ course_id, user_name }) => {
     }
   };
 
-  // Loop through Harvester VM list and if there is a VM in the get_vm_list, add the port number to the list
-  for (var i = 0; i < harvester_data.length; i++) {
-    var harvester_vm = harvester_data[i];
-    var harvester_vm_name = harvester_vm.metadata.name;
+  // Loop through Hypervisor VM list and if there is a VM in the get_vm_list, add the port number to the list
+  for (var i = 0; i < hypervisor_data.length; i++) {
+    var hypervisor_vm = hypervisor_data[i];
+    var hypervisor_vm_name = hypervisor_vm.metadata.name;
     for (var j = 0; j < data_vms.length; j++) {
-      if (harvester_vm_name === data_vms[j].vm_name) {
-        harvester_data[i].port_number = data_vms[j].port_number;
-        harvester_data[i].users = data_vms[j].users;
-        harvester_data[i].labs = data_vms[j].labs;
+      if (hypervisor_vm_name === data_vms[j].vm_name) {
+        hypervisor_data[i].port_number = data_vms[j].port_number;
+        hypervisor_data[i].users = data_vms[j].users;
+        hypervisor_data[i].labs = data_vms[j].labs;
       }
     }
   }
 
-  // Convert the labs in the harvester_data to the lab_mapping alias
-  for (var i = 0; i < harvester_data.length; i++) {
-    var harvester_vm = harvester_data[i];
-    if (harvester_vm.labs) {
-      var harvester_vm_labs = harvester_vm.labs;
-      var harvester_vm_labs_list = [];
-      for (var j = 0; j < harvester_vm_labs.length; j++) {
-        harvester_vm_labs_list[j] = lab_mapping[harvester_vm_labs[j]];
+  // Convert the labs in the hypervisor_data to the lab_mapping alias
+  for (var i = 0; i < hypervisor_data.length; i++) {
+    var hypervisor_vm = hypervisor_data[i];
+    if (hypervisor_vm.labs) {
+      var hypervisor_vm_labs = hypervisor_vm.labs;
+      var hypervisor_vm_labs_list = [];
+      for (var j = 0; j < hypervisor_vm_labs.length; j++) {
+        hypervisor_vm_labs_list[j] = lab_mapping[hypervisor_vm_labs[j]];
       }
-      harvester_data[i].labs = harvester_vm_labs_list;
+      hypervisor_data[i].labs = hypervisor_vm_labs_list;
     }
   }
 
-  var filtered_harvester_vm_list = [];
-  // If harvester VM metadata.name matches any of the VM names in the filtered_vm_list, add it to the filtered_harvester_vm_list
-  for (var i = 0; i < harvester_data.length; i++) {
-    var harvester_vm = harvester_data[i];
-    var harvester_vm_name = harvester_vm.metadata.name;
+  var filtered_hypervisor_vm_list = [];
+  // If hypervisor VM metadata.name matches any of the VM names in the filtered_vm_list, add it to the filtered_hypervisor_vm_list
+  for (var i = 0; i < hypervisor_data.length; i++) {
+    var hypervisor_vm = hypervisor_data[i];
+    var hypervisor_vm_name = hypervisor_vm.metadata.name;
     for (var j = 0; j < filtered_vm_list.length; j++) {
-      if (harvester_vm_name === filtered_vm_list[j].vm_name) {
-        filtered_harvester_vm_list.push(harvester_vm);
+      if (hypervisor_vm_name === filtered_vm_list[j].vm_name) {
+        filtered_hypervisor_vm_list.push(hypervisor_vm);
       }
     }
   }
 
-  const get_harvester_vm_list = () => {
-    // If the filtered_harvester_vm_list is empty, return a placeholder
-    if (filtered_harvester_vm_list.length === 0) {
+  const get_hypervisor_vm_list = () => {
+    // If the filtered_hypervisor_vm_list is empty, return a placeholder
+    if (filtered_hypervisor_vm_list.length === 0) {
       return (
         <tr>
           <td colSpan="6">
@@ -158,7 +158,7 @@ const VirtualMachinesTable = ({ course_id, user_name }) => {
       );
     }
 
-    return filtered_harvester_vm_list.map(
+    return filtered_hypervisor_vm_list.map(
       ({ metadata, status, port_number, users, labs }) => (
         <tr key={metadata.name} className="hover">
           <td>
@@ -219,7 +219,7 @@ const VirtualMachinesTable = ({ course_id, user_name }) => {
     );
   };
 
-  const harvester_vm_list = get_harvester_vm_list();
+  const hypervisor_vm_list = get_hypervisor_vm_list();
 
   return (
     <div className="overflow-x-auto w-full">
@@ -234,7 +234,7 @@ const VirtualMachinesTable = ({ course_id, user_name }) => {
             <th>Power</th>
           </tr>
         </thead>
-        <tbody>{harvester_vm_list}</tbody>
+        <tbody>{hypervisor_vm_list}</tbody>
       </table>
     </div>
   );

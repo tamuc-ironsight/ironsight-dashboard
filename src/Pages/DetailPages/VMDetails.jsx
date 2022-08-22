@@ -4,7 +4,7 @@ import Navbar from "../../Components/Navbar";
 import { Link, useParams } from "react-router-dom";
 import { BsPower } from "react-icons/bs";
 import {
-  getHarvesterVMList,
+  getHypervisorVMList,
   getBashHistory,
   getRunningProcesses,
   getFileMonitoring,
@@ -34,7 +34,7 @@ function VMDetails() {
     if (confirm_power_on) {
       console.log("[Ironsight] Toggling power on : " + hostname);
       var status = fetch(
-        `${import.meta.env.VITE_IRONSIGHT_API_URL}/get.php?q=power_toggle_vm&vm_name=` + hostname
+        `${import.meta.env.VITE_IRONSIGHT_API_URL}//get.php?q=power_toggle_vm&vm_name=` + hostname
       );
       status.then((response) => {
         return response.json();
@@ -45,10 +45,10 @@ function VMDetails() {
   };
   const [refetchInterval, setRefetchInterval] = React.useState(15000);
   const {
-    data: harvester_data,
-    isLoading: harvester_isLoading,
-    isError: harvester_isError,
-  } = useQuery("harvester_vms", getHarvesterVMList, {
+    data: hypervisor_data,
+    isLoading: hypervisor_isLoading,
+    isError: hypervisor_isError,
+  } = useQuery("hypervisor_vms", getHypervisorVMList, {
     // Refetch the data every 15 seconds
     refetchInterval: refetchInterval,
   });
@@ -56,16 +56,17 @@ function VMDetails() {
   const { vm_name } = useParams();
   var vm_status = "";
   var vm_uid = "";
-  if (!harvester_isLoading && !harvester_isError) {
-    for (let i = 0; i < harvester_data.length; i++) {
-      if (harvester_data[i]["metadata"]["name"] === vm_name) {
-        vm_status = harvester_data[i]["status"]["printableStatus"];
-        vm_uid = harvester_data[i]["metadata"]["uid"];
+  if (!hypervisor_isLoading && !hypervisor_isError) {
+    for (let i = 0; i < hypervisor_data.length; i++) {
+      if (hypervisor_data[i]["metadata"]["name"] === vm_name) {
+        vm_status = hypervisor_data[i]["status"]["printableStatus"];
+        vm_uid = hypervisor_data[i]["metadata"]["uid"];
       }
     }
   }
 
-  var vm_vnc_address = `${import.meta.env.VITE_HARVESTER_URL}dashboard/c/local/harvester/console/${vm_uid}/vnc`;
+  // var vm_vnc_address = `${import.meta.env.VITE_HYPERVISOR_URL}/dashboard/c/local/hypervisor/console/${vm_uid}/vnc`;
+  var vm_vnc_addres = '';
 
   const {
     data: sql_vms,
