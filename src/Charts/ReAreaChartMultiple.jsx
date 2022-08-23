@@ -10,7 +10,7 @@ import {
 
 import LinearProgress from "@mui/material/LinearProgress";
 import { useQuery } from "react-query";
-import { getCPUUsage } from "../IronsightAPI";
+import { getHypervisorUsage } from "../IronsightAPI";
 import { BsZoomIn } from "react-icons/bs";
 
 const CustomTooltip = ({ active, payload, label }) => {
@@ -31,7 +31,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 export default function ReAreaChartMultiple() {
   const [isZoomed, setIsZoomed] = React.useState(true);
-  const { data, isLoading, isError } = useQuery("cpu_usage", getCPUUsage, {
+  const { data, isLoading, isError } = useQuery("hypervisor_usage", getHypervisorUsage, {
     // Refetch the data every 15 seconds
     refetchInterval: 15000,
   });
@@ -48,26 +48,28 @@ export default function ReAreaChartMultiple() {
   // and map them to a react-chartjs-2 chart
   // For every host in data.data.result, create a new dataset
 
-  var results_list = data.data.result;
+  var results_list = data.data;
   var datasets = [];
   var labels = [];
 
   for (var i = 0; i < results_list.length; i++) {
+
     var result = results_list[i];
-    var hostname = result.metric.name;
-    // If vm_name is specified, only show the data for that VM
-    var chart_data_keys = result.values.map(function (bucket) {
+    var hostname = result.node;
+
+    var chart_data_keys = result.data.map(function (data) {
       //   Convert the epoch time to a human readable date
-      var date = new Date(bucket[0] * 1000);
+      var date = new Date(data.time * 1000);
       var hours = date.getHours();
       var minutes = "0" + date.getMinutes();
       var seconds = "0" + date.getSeconds();
       var formattedTime =
-        hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
+        hours + ":" + minutes.substr(-2);
       return formattedTime;
     });
-    var chart_data_values = result.values.map(function (bucket) {
-      return parseFloat(bucket[1] * 100).toFixed(2);
+
+    var chart_data_values = result.data.map(function (data) {
+      return data['cpu'] * 100;
     });
 
     datasets.push({
