@@ -30,6 +30,12 @@ const HypervisorMemoryWidget = () => {
     return <p>Error!</p>;
   }
 
+  if (data) {
+    if (data['status'] == 'error') {
+      return <p>Error!</p>;
+    }
+  }
+
   // Make a GET request to the server to get the list of hostnames
   // and map them to a react-chartjs-2 chart
   // For every host in data.data.result, create a new dataset
