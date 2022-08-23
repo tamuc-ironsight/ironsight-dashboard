@@ -55,10 +55,20 @@ export const getDocCount = async () => {
 
 export const getHypervisorUsage = async () => {
   const response = await fetch(
-    `${import.meta.env.VITE_HYPERVISOR_URL}/usage`
+    `${import.meta.env.VITE_HYPERVISOR_URL}/usage/nodes`
   );
   if (!response.ok) {
     throw new Error("Failed to fetch hypervisor usage");
+  }
+  return response.json();
+};
+
+export const getVMUsage = async () => {
+  const response = await fetch(
+    `${import.meta.env.VITE_HYPERVISOR_URL}/usage/vms`
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch virtual machine usage");
   }
   return response.json();
 };
