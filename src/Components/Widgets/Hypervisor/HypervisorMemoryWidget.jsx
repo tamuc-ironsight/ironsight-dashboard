@@ -9,7 +9,7 @@ import {
 import { Line } from "react-chartjs-2";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useQuery } from "react-query";
-import { getMemoryUsage } from "../../../IronsightAPI";
+import { getHypervisorUsage } from "../../../IronsightAPI";
 import { BsZoomIn } from "react-icons/bs";
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement);
@@ -17,13 +17,12 @@ ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement);
 const HypervisorMemoryWidget = () => {
   const [intervalMs, setIntervalMs] = React.useState(15000);
   const [isZoomed, setIsZoomed] = React.useState(true);
-  const { data, isLoading, isError } = useQuery("memory_usage", getMemoryUsage, {
+  const { data, isLoading, isError } = useQuery("hypervisor_usage", getHypervisorUsage, {
     // Refetch the data every 15 seconds
     refetchInterval: intervalMs,
   });
 
   if (isLoading) {
-    console.log("[Ironsight] Fetching Memory Data...");
     return <LinearProgress />;
   }
 
@@ -35,25 +34,29 @@ const HypervisorMemoryWidget = () => {
   // and map them to a react-chartjs-2 chart
   // For every host in data.data.result, create a new dataset
 
-  var results_list = data.data.result;
+  var results_list = data.data;
   var datasets = [];
   var labels = [];
+  var max_memory = results_list[0].data[0].memtotal / 1024 / 1024 / 1024;
 
   for (var i = 0; i < results_list.length; i++) {
+
     var result = results_list[i];
-    var hostname = result.metric.instance;
-    var chart_data_keys = result.values.map(function (bucket) {
+    var hostname = result.node;
+
+    var chart_data_keys = result.data.map(function (data) {
       //   Convert the epoch time to a human readable date
-      var date = new Date(bucket[0] * 1000);
+      var date = new Date(data.time * 1000);
       var hours = date.getHours();
       var minutes = "0" + date.getMinutes();
       var seconds = "0" + date.getSeconds();
       var formattedTime =
-        hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
+        hours + ":" + minutes.substr(-2);
       return formattedTime;
     });
-    var chart_data_values = result.values.map(function (bucket) {
-      return bucket[1] * 100;
+
+    var chart_data_values = result.data.map(function (data) {
+      return data['memused'] / 1024 / 1024 / 1024;
     });
     datasets.push({
       label: hostname,
@@ -99,7 +102,13 @@ const HypervisorMemoryWidget = () => {
         autoskip: false,
         usePointStyle: false,
         // Set max to 100 unless zoomed in
-        max: isZoomed ? null : 100,
+        max: isZoomed ? null : max_memory,
+        // Add GB to the y-axis label
+        ticks: {
+          callback: function (value, index, values) {
+            return value + " GB";
+          }
+        }
       },
     },
     plugins: {

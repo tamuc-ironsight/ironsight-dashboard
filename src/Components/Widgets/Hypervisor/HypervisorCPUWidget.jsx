@@ -14,7 +14,7 @@ import { BsZoomIn } from "react-icons/bs";
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement);
 
-const HypervisorWidget = () => {
+const HypervisorCPUWidget = () => {
   const [intervalMs, setIntervalMs] = React.useState(15000);
   const [isZoomed, setIsZoomed] = React.useState(true);
   const { data, isLoading, isError } = useQuery("hypervisor_usage", getHypervisorUsage, {
@@ -23,7 +23,6 @@ const HypervisorWidget = () => {
   });
 
   if (isLoading) {
-    console.log("[Ironsight] Fetching Hypervisor Data...");
     return <LinearProgress />;
   }
 
@@ -128,4 +127,4 @@ const HypervisorWidget = () => {
   );
 };
 
-export default HypervisorWidget;
+export default HypervisorCPUWidget;
