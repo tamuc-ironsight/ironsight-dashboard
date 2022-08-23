@@ -53,12 +53,22 @@ export const getDocCount = async () => {
   return response.json();
 };
 
-export const getCPUUsage = async () => {
+export const getHypervisorUsage = async () => {
   const response = await fetch(
-    `${import.meta.env.VITE_IRONSIGHT_API_URL}/get.php?q=get_cpu_usage&step=5`
+    `${import.meta.env.VITE_HYPERVISOR_URL}/usage`
   );
   if (!response.ok) {
-    throw new Error("Failed to fetch CPU usage");
+    throw new Error("Failed to fetch hypervisor usage");
+  }
+  return response.json();
+};
+
+export const getCPUUsage = async () => {
+  const response = await fetch(
+    `${import.meta.env.VITE_HYPERVISOR_URL}/usage`
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch hypervisor usage");
   }
   return response.json();
 };

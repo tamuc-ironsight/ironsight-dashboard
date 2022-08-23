@@ -9,7 +9,7 @@ import {
 import { Line } from "react-chartjs-2";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useQuery } from "react-query";
-import { getCPUUsage } from "../../../IronsightAPI";
+import { getHypervisorUsage } from "../../../IronsightAPI";
 import { BsZoomIn } from "react-icons/bs";
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement);
@@ -17,13 +17,13 @@ ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement);
 const HypervisorWidget = () => {
   const [intervalMs, setIntervalMs] = React.useState(15000);
   const [isZoomed, setIsZoomed] = React.useState(true);
-  const { data, isLoading, isError } = useQuery("cpu_usage", getCPUUsage, {
+  const { data, isLoading, isError } = useQuery("hypervisor_usage", getHypervisorUsage, {
     // Refetch the data every 15 seconds
     refetchInterval: intervalMs,
   });
 
   if (isLoading) {
-    console.log("[Ironsight] Fetching CPU Data...");
+    console.log("[Ironsight] Fetching Hypervisor Data...");
     return <LinearProgress />;
   }
 
@@ -34,19 +34,18 @@ const HypervisorWidget = () => {
   // Make a GET request to the server to get the list of hostnames
   // and map them to a react-chartjs-2 chart
   // For every host in data.data.result, create a new dataset
-
-  var results_list = data.data.result;
+  var results_list = data.data;
   var datasets = [];
   var labels = [];
 
   for (var i = 0; i < results_list.length; i++) {
 
     var result = results_list[i];
-    var hostname = result.metric.instance;
+    var hostname = result.node;
 
-    var chart_data_keys = result.values.map(function (bucket) {
+    var chart_data_keys = result.data.map(function (data) {
       //   Convert the epoch time to a human readable date
-      var date = new Date(bucket[0] * 1000);
+      var date = new Date(data.time * 1000);
       var hours = date.getHours();
       var minutes = "0" + date.getMinutes();
       var seconds = "0" + date.getSeconds();
@@ -55,8 +54,8 @@ const HypervisorWidget = () => {
       return formattedTime;
     });
 
-    var chart_data_values = result.values.map(function (bucket) {
-      return bucket[1] * 100;
+    var chart_data_values = result.data.map(function (data) {
+      return data['cpu'] * 100;
     });
     
     datasets.push({
