@@ -11,7 +11,7 @@ import {
 
 import LinearProgress from "@mui/material/LinearProgress";
 import { useQuery } from "react-query";
-import { getVMCPUUsage } from "../../../IronsightAPI";
+import { getVMUsage } from "../../../IronsightAPI";
 import { BsZoomIn } from "react-icons/bs";
 const chart_colors = ["#8142FF", "#359EE5", "#ff6384", "#ffce56", "#a2ff8f"];
 const CustomTooltip = ({ active, payload, label }) => {
@@ -31,7 +31,7 @@ const CustomTooltip = ({ active, payload, label }) => {
                 <div key={index}>
                   <div style={{ color: chart_colors[index] }}>
                     {" "}
-                    {item.dataKey}: {` ${item.value}` + "%"}{" "}
+                    {item.dataKey}: {` ${item.value.toFixed(2)}}` + "%"}{" "}
                   </div>
                 </div>
               );
@@ -48,7 +48,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 function VMCPUWidgetHome() {
   const [intervalMs, setIntervalMs] = React.useState(15000);
   const [isZoomed, setIsZoomed] = React.useState(true);
-  const { data, isLoading, isError } = useQuery("vm_cpu_usage", getVMCPUUsage, {
+  const { data, isLoading, isError } = useQuery("vm_usage", getVMUsage, {
     // Refetch the data every 15 seconds
     refetchInterval: intervalMs,
   });
@@ -65,25 +65,49 @@ function VMCPUWidgetHome() {
   // and map them to a react-chartjs-2 chart
   // For every host in data.data.result, create a new dataset
 
-  var results_list = data.data.result;
+  if (isLoading) {
+    return <LinearProgress />;
+  }
+  
+  if (isError) {
+    return <p>Error!</p>;
+  }
+
+  if (data) {
+    if (data['status'] == 'error') {
+      return <p>Error!</p>;
+    }
+  }
+  
+  // Make a GET request to the server to get the list of hostnames
+  // and map them to a react-chartjs-2 chart
+  // For every host in data.data.result, create a new dataset
+  var results_list = data;
   var datasets = [];
   var labels = [];
+
   for (var i = 0; i < results_list.length; i++) {
+
     var result = results_list[i];
-    var hostname = result.metric.name;
-    // If vm_name is specified, only show the data for that VM
-    var chart_data_keys = result.values.map(function (bucket) {
+    var hostname = result.vm_name;
+
+    var chart_data_keys = result.data.map(function (data) {
       //   Convert the epoch time to a human readable date
-      var date = new Date(bucket[0] * 1000);
+      var date = new Date(data.time * 1000);
       var hours = date.getHours();
       var minutes = "0" + date.getMinutes();
       var seconds = "0" + date.getSeconds();
       var formattedTime =
-        hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
+        hours + ":" + minutes.substr(-2);
       return formattedTime;
     });
-    var chart_data_values = result.values.map(function (bucket) {
-      return parseFloat(bucket[1] * 100).toFixed(2);
+
+    var chart_data_values = result.data.map(function (data) {
+      // If data.cpu is undefined, return 0
+      if (data.cpu == undefined) {
+        return 0;
+      }
+      return data['cpu'] * 100;
     });
 
     datasets.push({
