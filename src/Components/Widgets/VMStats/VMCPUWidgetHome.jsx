@@ -31,7 +31,7 @@ const CustomTooltip = ({ active, payload, label }) => {
                 <div key={index}>
                   <div style={{ color: chart_colors[index] }}>
                     {" "}
-                    {item.dataKey}: {` ${item.value.toFixed(2)}}` + "%"}{" "}
+                    {item.dataKey}: {` ${item.value.toFixed(2)}` + "%"}{" "}
                   </div>
                 </div>
               );
