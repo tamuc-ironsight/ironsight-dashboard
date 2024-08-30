@@ -80,7 +80,7 @@ Please make sure to update tests as appropriate.
 This project was created by a group of students at Texas A&M-Commerce for Systems Analysis & Design (CSCI 359)
 
 - Truman Brown
-- Tyler Harrison
+- Emily Astranova
 - Sudip Koirala
 - Augustine Solis
 
